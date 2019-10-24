@@ -9,7 +9,30 @@ class TranslateApp extends StatefulWidget {
   _TranslateAppState createState() => _TranslateAppState();
 }
 
-class _TranslateAppState extends State<TranslateApp> {
+class _TranslateAppState extends State<TranslateApp> with SingleTickerProviderStateMixin{
+  AnimationController controller;
+  Animation<double> _animation;
+  bool toggle=true;
+  @override
+  void initState() {
+    controller = AnimationController(
+        duration: Duration(milliseconds: 1200), vsync: this, value: 0);
+
+  /*  controller.addStatusListener((AnimationStatus status) {
+      if (status == AnimationStatus.completed) {
+        controller.reverse();
+      }
+      else if (status == AnimationStatus.dismissed) {
+        controller.forward();
+      }
+    });*/
+
+    controller.addListener(() {
+
+      setState(() {});
+    });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,172 +44,105 @@ class _TranslateAppState extends State<TranslateApp> {
         backgroundColor: Colors.blue,
         leading: Icon(Icons.menu),
       ),
-      body: Center(
-        child: Column(
-          children: [
-            Card(
+      body: Container(
+        color: Colors.white,
+        child: Stack(
+
+          children: <Widget>[// Max Size
+            AlignTransition(
+              alignment: Tween(begin: Alignment(-1.0,-1.0),end: Alignment(1.0,-1.0)).animate(controller),
+              child: Container(
                 color: Colors.white,
-                child: Column(children: [
-                  Row(
-                    children: <Widget>[
-                      Text('English',
-                          style: TextStyle(fontSize: 20, color: Colors.blue)),
-                      Icon(
-                        Icons.arrow_drop_down,
-                        color: Colors.blue,
-                      ),
-                      SizedBox(
-                        width: 50,
-                      ),
-                      Icon(Icons.repeat, color: Colors.blue),
-                      SizedBox(
-                        width: 50,
-                      ),
-                      Text('Indonesian',
-                          style: TextStyle(fontSize: 20, color: Colors.blue)),
-                      Icon(Icons.arrow_drop_down, color: Colors.blue),
-                    ],
-                  ),
-                  Divider(color: Colors.black),
-                  SizedBox(height: 10),
-                  Row(
-                    children: <Widget>[
-                      Text('ENGLISH',
-                          style: TextStyle(fontSize: 15, color: Colors.black)),
-                      Icon(Icons.speaker),
-                      SizedBox(
-                        width: 220,
-                      ),
-                      Icon(Icons.cancel),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Text('  good morning',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 30,
-                              color: Colors.black)),
-                      SizedBox(
-                        width: 120,
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      SizedBox(
-                        width: 30,
-                      ),
-                      Icon(Icons.camera),
-                      SizedBox(
-                        width: 70,
-                      ),
-                      Icon(Icons.border_color),
-                      SizedBox(
-                        width: 70,
-                      ),
-                      Icon(Icons.call),
-                      SizedBox(
-                        width: 70,
-                      ),
-                      Icon(Icons.volume_down),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text('Camera'),
-                      SizedBox(
-                        width: 30,
-                      ),
-                      Text('Handwriting'),
-                      SizedBox(
-                        width: 30,
-                      ),
-                      Text('Conversation'),
-                      SizedBox(
-                        width: 30,
-                      ),
-                      Text('Voice'),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                ])),
-            Card(
-              color: Colors.blue,
-              margin: EdgeInsets.all(5),
-              child: Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: Column(
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Icon(Icons.volume_down),
-                          Text('Indonesian',
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.white)),
-                          SizedBox(width: 180),
-                          Icon(Icons.star)
-                        ],
-                      ),
-                      SizedBox(height: 30),
-                      Row(
-                        children: <Widget>[
-                          Text('Selamat Pagi',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 30,
-                                  color: Colors.white)),
-                          SizedBox(width: 100),
-                        ],
-                      ),
-                      SizedBox(height: 30),
-                      Row(
-                        children: <Widget>[
-                          SizedBox(width: 280),
-                          Icon(Icons.volume_down),
-                          Icon(Icons.volume_down),
-                        ],
-                      ),
-                    ],
-                  )),
+                height: 50.0,
+                width: 120.0,
+                child: Row(
+                  children: <Widget>[
+                    Text("English",style: TextStyle(color: Colors.blue),),
+                    Icon(Icons.arrow_drop_down,color: Colors.blue,),
+                  ],
+                ),
+              ),
             ),
-            Card(
-              color: Colors.white70,
-              margin: EdgeInsets.all(5),
-              child: Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: Column(
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Text('DEFINITIONS',
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.black)),
-                          SizedBox(width: 100),
-                        ],
+            Align(
+              alignment: Alignment.topCenter,
+              child: RotationTransition(
+                turns: CurvedAnimation(
+                  parent: controller,
+                  curve: Curves.easeInCirc,
+                ),
+                child: Container(
+                  color: Colors.white,
+                  height: 50.0,
+                  width: 50.0,
+                    child: InkWell(
+                      customBorder: CircleBorder(),
+                      splashColor: Colors.red,
+
+                      child: IconButton(
+                         color: Colors.blue,
+                         icon: Icon(Icons.swap_horiz),
+                        onPressed: () {
+                           if(toggle){
+                             controller.forward();
+                           }
+                           else if(!toggle){
+                             controller.reverse();
+                           }
+                           toggle=!toggle;
+                          setState(() {
+
+                          });
+                        },
                       ),
-                      Row(
-                        children: <Widget>[
-                          Text('exclaimation',
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.grey)),
-                        ],
-                      ),
-                      Text(
-                          'expressing good wishes on meeting or parting during the morning'),
-                      Text(
-                          'He walked into Steins lounge on Tuesday Morning, bidding good morning to everyone who lined his route to the top  table"'),
-                    ],
-                  )),
+                    ),
+
+                ),
+              ),
             ),
+            AlignTransition(
+              alignment: Tween(begin: Alignment(1.0,-1.0),end: Alignment(-1.0,-1.0)).animate(controller),
+              child: Container(
+                color: Colors.white,
+                height: 50.0,
+                width: 120.0,
+                child: Row(
+                  children: <Widget>[
+                    Text("Indonesian",style: TextStyle(color: Colors.blue),),
+                    Icon(Icons.arrow_drop_down,color: Colors.blue,),
+                  ],
+                ),
+              ),
+            )
+
           ],
+
         ),
       ),
+
     );
   }
 }
+/*Container(
+                alignment: Alignment.topLeft,
+                child: Row(
+                  children: <Widget>[
+                    Text("English",style: TextStyle(color: Colors.blue),),
+                    Icon(Icons.arrow_drop_down,color: Colors.blue,),
+                  ],
+                ),
+              ),
+              Container(
+                  alignment: Alignment.center,
+                  child: InkResponse(
+                      splashColor: Colors.red,
+                      onTap: (){setState(() {});},
+                      child: Icon(Icons.swap_horiz,color: Colors.blue,))),
+              Container(
+                  alignment: Alignment.bottomRight,
+                child: Row(
+                  children: <Widget>[
+                    Text("Indonesian",style: TextStyle(color: Colors.blue),),
+                    Icon(Icons.arrow_drop_down,color: Colors.blue,),
+                  ],
+                ),
+              ),*/
